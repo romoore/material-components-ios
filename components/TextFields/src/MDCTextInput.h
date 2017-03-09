@@ -29,8 +29,6 @@
    - https://github.com/adamwaite/Validator
  */
 
-@protocol MDCTextInput;
-
 /** Common API for Material Design themed text inputs. */
 @protocol MDCTextInput <NSObject>
 
