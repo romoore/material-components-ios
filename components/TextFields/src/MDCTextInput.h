@@ -40,8 +40,27 @@
 /** The text displayed in the text input. */
 @property(nonatomic, nullable, copy) NSString *text;
 
+/** The text displayed in the text input with style attributes. */
+@property(nonatomic, nullable, copy) NSAttributedString *attributedText;
+
 /** The color of the text in the input. */
 @property(nonatomic, nullable, strong) UIColor *textColor;
+
+/**
+ The text string of the placeholder label.
+
+ Bringing convenience api found in UITextField to all MDCTextInputs. Maps to the .text of the
+ placeholder label.
+ */
+@property(nonatomic, nullable, copy) NSString *placeholder;
+
+/**
+ The attributed text string of the placeholder label.
+
+ Bringing convenience api found in UITextField to all MDCTextInputs. Maps to the .attributedText of the
+ placeholder label.
+ */
+@property(nonatomic, nullable, copy) NSAttributedString *attributedPlaceholder;
 
 /**
  The label displaying text when no input text has been entered. The Material Design guidelines call
