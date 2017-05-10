@@ -17,6 +17,7 @@
 #import "MDCFeatureHighlightView.h"
 
 #import "MDCFeatureHighlightLayer.h"
+#import "MDCFeatureHighlightView+MDCAppearance.h"
 #import "MDFTextAccessibility.h"
 #import "MaterialFeatureHighlightStrings.h"
 #import "MaterialFeatureHighlightStrings_table.h"
@@ -57,6 +58,10 @@ const CGFloat kMDCFeatureHighlightPulseRadiusBloomAmount =
   MDCFeatureHighlightLayer *_pulseLayer;
   MDCFeatureHighlightLayer *_innerLayer;
   MDCFeatureHighlightLayer *_displayMaskLayer;
+
+  // Explicitly defined since the associated properties are declared in a public category
+  UIColor *_outerHighlightColor;
+  UIColor *_innerHighlightColor;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame {

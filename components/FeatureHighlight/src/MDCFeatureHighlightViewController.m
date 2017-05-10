@@ -18,6 +18,7 @@
 
 #import "private/MDCFeatureHighlightAnimationController.h"
 #import "private/MDCFeatureHighlightView.h"
+#import "MDCFeatureHighlightView+MDCAppearance.h"
 
 const CGFloat kMDCFeatureHighlightOuterHighlightAlpha = 0.96f;
 
