@@ -17,6 +17,7 @@
 #import "MDCFeatureHighlightAnimationController.h"
 
 #import "MDCFeatureHighlightView.h"
+#import "MDCFeatureHighlightView+MDCAppearance.h"
 
 const NSTimeInterval kMDCFeatureHighlightPresentationDuration = 0.35f;
 const NSTimeInterval kMDCFeatureHighlightDismissalDuration = 0.2f;

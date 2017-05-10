@@ -14,7 +14,7 @@
  limitations under the License.
  */
 
-#import "private/MDCFeatureHighlightView.h"
+#import "MDCFeatureHighlightView.h"
 
 @interface MDCFeatureHighlightView (MDCAppearance)
 
