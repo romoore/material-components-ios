@@ -389,9 +389,15 @@ static const NSInteger kSupplementaryViewZIndex = 99;
   // value. The opposite is true for horizontal scrolling. Therefore we must manually set insets
   // on both the backgroundView and contentView in order to match the insets of the collection
   // view rows.
+  id<UICollectionViewDelegateFlowLayout> flowLayoutDelegate = (id<UICollectionViewDelegateFlowLayout>)self.collectionView.delegate;
+  UIEdgeInsets insets = self.sectionInset;
+  if ([flowLayoutDelegate respondsToSelector:@selector(collectionView:layout:insetForSectionAtIndex:)]) {
+    insets = [flowLayoutDelegate collectionView:self.collectionView layout:self insetForSectionAtIndex:attr.indexPath.section];
+  }
+
   CGRect insetFrame = attr.frame;
   if (!CGRectIsEmpty(insetFrame)) {
-    UIEdgeInsets insets = [self insetsAtSectionIndex:attr.indexPath.section];
+    insets = [self insetsAtSectionIndex:attr.indexPath.section];
     if (self.scrollDirection == UICollectionViewScrollDirectionVertical) {
       insetFrame = CGRectInset(insetFrame, insets.left / 2 + insets.right / 2, 0);
       if ([attr.representedElementKind isEqualToString:UICollectionElementKindSectionHeader]) {
