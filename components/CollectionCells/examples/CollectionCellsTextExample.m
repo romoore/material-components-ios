@@ -43,6 +43,7 @@ static NSString *const kExampleDetailText =
 
 - (void)viewDidLoad {
   [super viewDidLoad];
+  self.styler.cellStyle = MDCCollectionViewCellStyleCard;
 
   // Register cell class.
   [self.collectionView registerClass:[MDCCollectionViewTextCell class]
@@ -88,6 +89,15 @@ static NSString *const kExampleDetailText =
 - (CGFloat)collectionView:(UICollectionView *)collectionView
     cellHeightAtIndexPath:(NSIndexPath *)indexPath {
   return [_content[indexPath.item][2] integerValue];
+}
+
+- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
+  UIEdgeInsets insets = [super collectionView:collectionView layout:collectionViewLayout insetForSectionAtIndex:section];
+  if ([self.styler cellStyleAtSectionIndex:section] == MDCCollectionViewCellStyleCard && self.view.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassRegular) {
+    insets.left *= 2;
+    insets.right *= 2;
+  }
+  return insets;
 }
 
 @end
