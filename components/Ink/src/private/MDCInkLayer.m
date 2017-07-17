@@ -15,6 +15,7 @@
  */
 
 #import "MDCInkLayer.h"
+#import "MDCInkLayer+Testing.h"
 
 #import <UIKit/UIKit.h>
 
@@ -87,7 +88,14 @@ typedef NS_ENUM(NSInteger, MDCInkRippleState) {
 
 @end
 
-@interface MDCInkLayerRipple : CAShapeLayer
+
+
+#if defined(__IPHONE_10_0) && (__IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0)
+@interface MDCInkLayerRipple () <CAAnimationDelegate>
+@end
+#endif
+
+@interface MDCInkLayerRipple ()
 
 @property(nonatomic, assign, getter=isAnimationCleared) BOOL animationCleared;
 @property(nonatomic, weak) id<MDCInkLayerRippleDelegate> animationDelegate;
@@ -98,13 +106,7 @@ typedef NS_ENUM(NSInteger, MDCInkRippleState) {
 @property(nonatomic, assign) CGRect targetFrame;
 @property(nonatomic, assign) MDCInkRippleState rippleState;
 @property(nonatomic, strong) UIColor *color;
-
 @end
-
-#if defined(__IPHONE_10_0) && (__IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0)
-@interface MDCInkLayerRipple () <CAAnimationDelegate>
-@end
-#endif
 
 @implementation MDCInkLayerRipple
 
@@ -197,14 +199,12 @@ static NSString *const kInkLayerForegroundOpacityAnim = @"foregroundOpacityAnim"
 static NSString *const kInkLayerForegroundPositionAnim = @"foregroundPositionAnim";
 static NSString *const kInkLayerForegroundScaleAnim = @"foregroundScaleAnim";
 
-@interface MDCInkLayerForegroundRipple : MDCInkLayerRipple
-
+@interface MDCInkLayerForegroundRipple ()
 @property(nonatomic, assign) BOOL useCustomInkCenter;
 @property(nonatomic, assign) CGPoint customInkCenter;
 @property(nonatomic, strong) CAKeyframeAnimation *foregroundOpacityAnim;
 @property(nonatomic, strong) CAKeyframeAnimation *foregroundPositionAnim;
 @property(nonatomic, strong) CAKeyframeAnimation *foregroundScaleAnim;
-
 @end
 
 @implementation MDCInkLayerForegroundRipple
@@ -379,10 +379,8 @@ static CGFloat const kInkLayerBackgroundBaseOpacityExitDuration = 0.48f;
 static CGFloat const kInkLayerBackgroundFastEnterDuration = 0.12f;
 static NSString *const kInkLayerBackgroundOpacityAnim = @"backgroundOpacityAnim";
 
-@interface MDCInkLayerBackgroundRipple : MDCInkLayerRipple
-
+@interface  MDCInkLayerBackgroundRipple ()
 @property(nonatomic, strong) CAKeyframeAnimation *backgroundOpacityAnim;
-
 @end
 
 @implementation MDCInkLayerBackgroundRipple
