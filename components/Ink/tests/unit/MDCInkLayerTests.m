@@ -17,7 +17,8 @@
 @import XCTest;
 #import "MDCInkLayer+Testing.h"
 
-#pragma mark - UnitTest categories
+#pragma mark - Property exposure
+
 @interface MDCInkLayer (UnitTests)
 
 @property(nonatomic, strong) NSMutableArray *foregroundRipples;
@@ -26,6 +27,7 @@
 @end
 
 #pragma mark - Subclasses for testing
+
 @interface MDCFakeForegroundRipple : MDCInkLayerForegroundRipple
 
 @property(nonatomic, assign) BOOL exitAnimationParameter;
@@ -54,7 +56,7 @@
 
 @end
 
-#pragma mark - Unit Tests
+#pragma mark - Tests
 
 @interface MDCInkLayerTests : XCTestCase
 @end
