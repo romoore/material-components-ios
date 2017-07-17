@@ -491,11 +491,11 @@ static NSString *const kInkLayerBackgroundOpacityAnim = @"backgroundOpacityAnim"
 }
 
 - (void)resetAllInk:(BOOL)animated {
-  if (self.foregroundRipples.count > 0) {
-    [self.foregroundRipples makeObjectsPerformSelector:@selector(exit:)];
+  for (MDCInkLayerForegroundRipple *foregroundRipple in self.foregroundRipples) {
+    [foregroundRipple exit:animated];
   }
-  if (self.backgroundRipples.count > 0) {
-    [self.backgroundRipples makeObjectsPerformSelector:@selector(exit:)];
+  for (MDCInkLayerBackgroundRipple *backgroundRipple in self.backgroundRipples) {
+    [backgroundRipple exit:animated];
   }
 }
 

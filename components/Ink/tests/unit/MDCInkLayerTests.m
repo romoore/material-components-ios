@@ -21,8 +21,8 @@
 
 @interface MDCInkLayer (UnitTests)
 
-@property(nonatomic, strong) NSMutableArray *foregroundRipples;
-@property(nonatomic, strong) NSMutableArray *backgroundRipples;
+@property(nonatomic, strong) NSMutableArray<MDCInkLayerForegroundRipple *> *foregroundRipples;
+@property(nonatomic, strong) NSMutableArray<MDCInkLayerBackgroundRipple *> *backgroundRipples;
 
 @end
 
