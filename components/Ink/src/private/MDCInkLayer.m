@@ -88,8 +88,6 @@ typedef NS_ENUM(NSInteger, MDCInkRippleState) {
 
 @end
 
-
-
 #if defined(__IPHONE_10_0) && (__IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0)
 @interface MDCInkLayerRipple () <CAAnimationDelegate>
 @end
@@ -379,7 +377,7 @@ static CGFloat const kInkLayerBackgroundBaseOpacityExitDuration = 0.48f;
 static CGFloat const kInkLayerBackgroundFastEnterDuration = 0.12f;
 static NSString *const kInkLayerBackgroundOpacityAnim = @"backgroundOpacityAnim";
 
-@interface  MDCInkLayerBackgroundRipple ()
+@interface MDCInkLayerBackgroundRipple ()
 @property(nonatomic, strong) CAKeyframeAnimation *backgroundOpacityAnim;
 @end
 
@@ -450,7 +448,9 @@ static NSString *const kInkLayerBackgroundOpacityAnim = @"backgroundOpacityAnim"
  @param point Evaporate the ink towards the point.
  @param completionBlock Block called after the completion of the animation.
  */
-- (void)resetBottomInk:(BOOL)animated toPoint:(CGPoint)point completion:(void (^)(void))completionBlock;
+- (void)resetBottomInk:(BOOL)animated
+               toPoint:(CGPoint)point
+            completion:(void (^)(void))completionBlock;
 
 @property(nonatomic, strong) CAShapeLayer *compositeRipple;
 @property(nonatomic, strong) NSMutableArray<MDCInkLayerForegroundRipple *> *foregroundRipples;

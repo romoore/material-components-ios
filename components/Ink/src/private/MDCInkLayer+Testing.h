@@ -17,8 +17,6 @@
 #import "MDCInkLayer.h"
 
 @interface MDCInkLayerRipple : CAShapeLayer
-
-
 @end
 
 @interface MDCInkLayerForegroundRipple : MDCInkLayerRipple

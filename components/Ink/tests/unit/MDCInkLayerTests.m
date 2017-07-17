@@ -17,36 +17,44 @@
 @import XCTest;
 #import "MDCInkLayer+Testing.h"
 
+#pragma mark - UnitTest categories
+@interface MDCInkLayer (UnitTests)
+
+@property(nonatomic, strong) NSMutableArray *foregroundRipples;
+@property(nonatomic, strong) NSMutableArray *backgroundRipples;
+
+@end
+
+#pragma mark - Subclasses for testing
 @interface MDCFakeForegroundRipple : MDCInkLayerForegroundRipple
-@property (nonatomic, assign) BOOL exitAnimationParameter;
+
+@property(nonatomic, assign) BOOL exitAnimationParameter;
+
 @end
 
 @implementation MDCFakeForegroundRipple
+
 - (void)exit:(BOOL)animated {
   self.exitAnimationParameter = animated;
 }
+
 @end
 
 @interface MDCFakeBackgroundRipple : MDCInkLayerBackgroundRipple
 
-@property (nonatomic, assign) BOOL exitAnimationParameter;
+@property(nonatomic, assign) BOOL exitAnimationParameter;
 
 @end
 
 @implementation MDCFakeBackgroundRipple
 
--(void)exit:(BOOL)animated {
+- (void)exit:(BOOL)animated {
   self.exitAnimationParameter = animated;
 }
 
 @end
 
-@interface MDCInkLayer (UnitTests)
-
-@property (nonatomic, strong) NSMutableArray *foregroundRipples;
-@property (nonatomic, strong) NSMutableArray *backgroundRipples;
-
-@end
+#pragma mark - Unit Tests
 
 @interface MDCInkLayerTests : XCTestCase
 @end
@@ -65,8 +73,10 @@
   [inkLayer resetAllInk:NO];
 
   // Then
-  XCTAssertFalse(fakeForegroundRipple.exitAnimationParameter, @"When calling without animation, the ripple should receive a 'NO' argument");
-  XCTAssertFalse(fakeBackgroundRipple.exitAnimationParameter, @"When calling without animation, the ripple should receive a 'NO' argument");
+  XCTAssertFalse(fakeForegroundRipple.exitAnimationParameter,
+                 @"When calling without animation, the ripple should receive a 'NO' argument");
+  XCTAssertFalse(fakeBackgroundRipple.exitAnimationParameter,
+                 @"When calling without animation, the ripple should receive a 'NO' argument");
 }
 
 - (void)testResetRipplesWithAnimation {
@@ -81,8 +91,10 @@
   [inkLayer resetAllInk:YES];
 
   // Then
-  XCTAssertTrue(fakeForegroundRipple.exitAnimationParameter, @"When calling without animation, the ripple should receive a 'NO' argument");
-  XCTAssertTrue(fakeBackgroundRipple.exitAnimationParameter, @"When calling without animation, the ripple should receive a 'NO' argument");
+  XCTAssertTrue(fakeForegroundRipple.exitAnimationParameter,
+                @"When calling without animation, the ripple should receive a 'NO' argument");
+  XCTAssertTrue(fakeBackgroundRipple.exitAnimationParameter,
+                @"When calling without animation, the ripple should receive a 'NO' argument");
 }
 
 @end
