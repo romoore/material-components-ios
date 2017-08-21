@@ -23,34 +23,36 @@ static const float kAmbientShadowOpacity = 0.08f;
 static NSString *const MDCShadowLayerElevationKey = @"MDCShadowLayerElevationKey";
 static NSString *const MDCShadowLayerShadowMaskEnabledKey = @"MDCShadowLayerShadowMaskEnabledKey";
 
-@implementation MDCShadowMetrics
+@implementation MDCDefaultShadowMetrics
+@synthesize topShadowOpacity = _topShadowOpacity, topShadowRadius = _topShadowRadius, topShadowOffset = _topShadowOffset;
+@synthesize bottomShadowOpacity = _bottomShadowOpacity, bottomShadowRadius = _bottomShadowRadius, bottomShadowOffset = _bottomShadowOffset;
 
-+ (MDCShadowMetrics *)metricsWithElevation:(CGFloat)elevation {
++ (id<MDCShadowMetrics>)metricsWithElevation:(CGFloat)elevation {
   if (0.0 < elevation) {
-    return [[MDCShadowMetrics alloc] initWithElevation:elevation];
+    return [[MDCDefaultShadowMetrics alloc] initWithElevation:elevation];
   } else {
-    return [MDCShadowMetrics emptyShadowMetrics];
+    return [MDCDefaultShadowMetrics emptyShadowMetrics];
   }
 }
 
-- (MDCShadowMetrics *)initWithElevation:(CGFloat)elevation {
+- (MDCDefaultShadowMetrics *)initWithElevation:(CGFloat)elevation {
   self = [super init];
   if (self) {
-    _topShadowRadius = [MDCShadowMetrics ambientShadowBlur:elevation];
+    _topShadowRadius = [MDCDefaultShadowMetrics ambientShadowBlur:elevation];
     _topShadowOffset = CGSizeMake(0.0, 0.0);
     _topShadowOpacity = kAmbientShadowOpacity;
-    _bottomShadowRadius = [MDCShadowMetrics keyShadowBlur:elevation];
-    _bottomShadowOffset = CGSizeMake(0.0, [MDCShadowMetrics keyShadowYOff:elevation]);
+    _bottomShadowRadius = [MDCDefaultShadowMetrics keyShadowBlur:elevation];
+    _bottomShadowOffset = CGSizeMake(0.0, [MDCDefaultShadowMetrics keyShadowYOff:elevation]);
     _bottomShadowOpacity = kKeyShadowOpacity;
   }
   return self;
 }
 
-+ (MDCShadowMetrics *)emptyShadowMetrics {
-  static MDCShadowMetrics *emptyShadowMetrics;
++ (MDCDefaultShadowMetrics *)emptyShadowMetrics {
+  static MDCDefaultShadowMetrics *emptyShadowMetrics;
   static dispatch_once_t once;
   dispatch_once(&once, ^{
-    emptyShadowMetrics = [[MDCShadowMetrics alloc] init];
+    emptyShadowMetrics = [[MDCDefaultShadowMetrics alloc] init];
     emptyShadowMetrics->_topShadowRadius = (CGFloat)0.0;
     emptyShadowMetrics->_topShadowOffset = CGSizeMake(0.0, 0.0);
     emptyShadowMetrics->_topShadowOpacity = 0.0f;
@@ -87,6 +89,17 @@ static NSString *const MDCShadowLayerShadowMaskEnabledKey = @"MDCShadowLayerShad
 @end
 
 @implementation MDCShadowLayer
+static Class<MDCShadowMetrics> _shadowMetricClass;
++ (Class<MDCShadowMetrics>)shadowMetricClass {
+  if (!_shadowMetricClass) {
+    _shadowMetricClass = [MDCDefaultShadowMetrics class];
+  }
+  return _shadowMetricClass;
+}
+
++ (void)setShadowMetricClass:(Class<MDCShadowMetrics>)shadowMetricClass {
+  _shadowMetricClass = shadowMetricClass;
+}
 
 - (instancetype)init {
   self = [super init];
@@ -148,7 +161,7 @@ static NSString *const MDCShadowLayerShadowMaskEnabledKey = @"MDCShadowLayerShad
   }
 
   // Setup shadow layer state based off _elevation and _shadowMaskEnabled
-  MDCShadowMetrics *shadowMetrics = [MDCShadowMetrics metricsWithElevation:_elevation];
+  id<MDCShadowMetrics> shadowMetrics = [[[self class] shadowMetricClass] metricsWithElevation:_elevation];
   _topShadow.shadowOffset = shadowMetrics.topShadowOffset;
   _topShadow.shadowRadius = shadowMetrics.topShadowRadius;
   _topShadow.shadowOpacity = shadowMetrics.topShadowOpacity;
@@ -226,7 +239,7 @@ static NSString *const MDCShadowLayerShadowMaskEnabledKey = @"MDCShadowLayerShad
 
 // Returns how far aware the shadow is spread from the edge of the layer.
 + (CGSize)shadowSpreadForElevation:(CGFloat)elevation {
-  MDCShadowMetrics *metrics = [MDCShadowMetrics metricsWithElevation:elevation];
+  id<MDCShadowMetrics> metrics = [[[self class] shadowMetricClass] metricsWithElevation:elevation];
 
   CGSize shadowSpread = CGSizeZero;
   shadowSpread.width = MAX(metrics.topShadowRadius, metrics.bottomShadowRadius) +
@@ -282,11 +295,11 @@ static NSString *const MDCShadowLayerShadowMaskEnabledKey = @"MDCShadowLayerShad
 
 - (void)setElevation:(CGFloat)elevation {
   _elevation = elevation;
-  MDCShadowMetrics *shadowMetrics = [MDCShadowMetrics metricsWithElevation:elevation];
+  id<MDCShadowMetrics> shadowMetrics = [[[self class] shadowMetricClass] metricsWithElevation:elevation];
   [self setMetrics:shadowMetrics];
 }
 
-- (void)setMetrics:(MDCShadowMetrics *)shadowMetrics {
+- (void)setMetrics:(id<MDCShadowMetrics>)shadowMetrics {
   CABasicAnimation *topOffsetAnimation = [CABasicAnimation animationWithKeyPath:@"shadowOffset"];
   topOffsetAnimation.fromValue = nil;
   topOffsetAnimation.toValue = [NSValue valueWithCGSize:shadowMetrics.topShadowOffset];

@@ -16,13 +16,7 @@
 
 #import <UIKit/UIKit.h>
 
-/**
- Metrics of the Material shadow effect.
-
- These can be used if you require your own shadow implementation but want to match the material
- spec.
- */
-@interface MDCShadowMetrics : NSObject
+@protocol MDCShadowMetrics <NSObject>
 @property(nonatomic, readonly) CGFloat topShadowRadius;
 @property(nonatomic, readonly) CGSize topShadowOffset;
 @property(nonatomic, readonly) float topShadowOpacity;
@@ -36,7 +30,16 @@
  @param elevation The shadow's elevation in points.
  @return The shadow metrics.
  */
-+ (nonnull MDCShadowMetrics *)metricsWithElevation:(CGFloat)elevation;
++ (nonnull id<MDCShadowMetrics>)metricsWithElevation:(CGFloat)elevation;
+@end
+
+/**
+ Metrics of the Material shadow effect.
+
+ These can be used if you require your own shadow implementation but want to match the material
+ spec.
+ */
+@interface MDCDefaultShadowMetrics : NSObject <MDCShadowMetrics>
 @end
 
 /**
@@ -54,6 +57,8 @@
      self.layer.rasterizationScale = [UIScreen mainScreen].scale;
  */
 @interface MDCShadowLayer : CALayer
+
+@property (class, nonatomic, strong) _Nonnull Class<MDCShadowMetrics> shadowMetricClass;
 
 /**
  The elevation of the layer in points.

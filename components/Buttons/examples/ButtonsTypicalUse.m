@@ -18,6 +18,21 @@
 
 #import "MaterialButtons.h"
 #import "MaterialTypography.h"
+#import "MDCShadowLayer.h"
+
+@interface NOTAShadowMetrics : NSObject <MDCShadowMetrics>
+
+@end
+
+@implementation NOTAShadowMetrics
+
+@synthesize topShadowOffset = _topShadowOffset, topShadowRadius = _topShadowRadius, topShadowOpacity = _topShadowOpacity;
+@synthesize bottomShadowOffset = _bottomShadowOffset, bottomShadowRadius = _bottomShadowRadius, bottomShadowOpacity = _bottomShadowOpacity;
++(id<MDCShadowMetrics>)metricsWithElevation:(CGFloat)elevation {
+  return nil;
+}
+
+@end
 
 @interface ButtonsTypicalUseViewController ()
 @property(nonatomic, strong) MDCFloatingButton *floatingButton;
@@ -38,6 +53,8 @@
 
 - (void)viewDidLoad {
   [super viewDidLoad];
+
+  [MDCShadowLayer setShadowMetricClass:[NOTAShadowMetrics class]];
 
   self.view.backgroundColor = [UIColor colorWithWhite:0.9f alpha:1];
   UIColor *titleColor = [UIColor whiteColor];
@@ -111,7 +128,7 @@
 
   // Floating action button
 
-  self.floatingButton = [[MDCFloatingButton alloc] init];
+  self.floatingButton = [MDCFloatingButton floatingButtonWithShape:MDCFloatingButtonShapeDefault];
   [self.floatingButton setTitleColor:titleColor forState:UIControlStateNormal];
   [self.floatingButton sizeToFit];
   [self.floatingButton addTarget:self
