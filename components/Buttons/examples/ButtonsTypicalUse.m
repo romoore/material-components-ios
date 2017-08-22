@@ -20,7 +20,7 @@
 #import "MaterialTypography.h"
 #import "MDCShadowLayer.h"
 
-@interface NOTAShadowMetrics : NSObject <MDCShadowMetrics>
+@interface NOTAShadowMetrics : NSObject <MDCShadowMetricsProtocol>
 
 @end
 
@@ -28,8 +28,57 @@
 
 @synthesize topShadowOffset = _topShadowOffset, topShadowRadius = _topShadowRadius, topShadowOpacity = _topShadowOpacity;
 @synthesize bottomShadowOffset = _bottomShadowOffset, bottomShadowRadius = _bottomShadowRadius, bottomShadowOpacity = _bottomShadowOpacity;
-+(id<MDCShadowMetrics>)metricsWithElevation:(CGFloat)elevation {
-  return nil;
+
++ (id<MDCShadowMetricsProtocol>)metricsWithElevation:(CGFloat)elevation {
+  if (0.0 < elevation) {
+    return [[NOTAShadowMetrics alloc] initWithElevation:elevation];
+  } else {
+    return [NOTAShadowMetrics emptyShadowMetrics];
+  }
+}
+
+- (NOTAShadowMetrics *)initWithElevation:(CGFloat)elevation {
+  self = [super init];
+  if (self) {
+    _topShadowRadius = [NOTAShadowMetrics ambientShadowBlur:elevation];
+    _topShadowOffset = CGSizeMake(0.0, 0.0);
+    _topShadowOpacity = 0.5;
+    _bottomShadowRadius = [NOTAShadowMetrics keyShadowBlur:elevation];
+    _bottomShadowOffset = CGSizeMake(0.0, [NOTAShadowMetrics keyShadowYOff:elevation]);
+    _bottomShadowOpacity = 0.5f;
+  }
+  return self;
+}
+
++ (NOTAShadowMetrics *)emptyShadowMetrics {
+  static NOTAShadowMetrics *emptyShadowMetrics;
+  static dispatch_once_t once;
+  dispatch_once(&once, ^{
+    emptyShadowMetrics = [[NOTAShadowMetrics alloc] init];
+    emptyShadowMetrics->_topShadowRadius = (CGFloat)0.0;
+    emptyShadowMetrics->_topShadowOffset = CGSizeMake(0.0, 0.0);
+    emptyShadowMetrics->_topShadowOpacity = 0.0f;
+    emptyShadowMetrics->_bottomShadowRadius = (CGFloat)0.0;
+    emptyShadowMetrics->_bottomShadowOffset = CGSizeMake(0.0, 0.0);
+    emptyShadowMetrics->_bottomShadowOpacity = 0.0f;
+  });
+
+  return emptyShadowMetrics;
+}
+
++ (CGFloat)ambientShadowBlur:(CGFloat)points {
+  CGFloat blur = 4 * points - 0.003701f;
+  return blur;
+}
+
++ (CGFloat)keyShadowBlur:(CGFloat)points {
+  CGFloat blur = 3 * points - 0.001648f;
+  return blur;
+}
+
++ (CGFloat)keyShadowYOff:(CGFloat)points {
+  CGFloat yOff = 3 * points - 0.03933f;
+  return yOff;
 }
 
 @end
@@ -53,8 +102,6 @@
 
 - (void)viewDidLoad {
   [super viewDidLoad];
-
-  [MDCShadowLayer setShadowMetricClass:[NOTAShadowMetrics class]];
 
   self.view.backgroundColor = [UIColor colorWithWhite:0.9f alpha:1];
   UIColor *titleColor = [UIColor whiteColor];
@@ -155,7 +202,11 @@
         completion:^{
           dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)),
                          dispatch_get_main_queue(), ^{
-                           [self.floatingButton expand:YES completion:nil];
+                           [self.floatingButton expand:YES completion:^(void){
+                             static BOOL showShadows = NO;
+                             [MDCShadowLayer setShadowMetricClass:showShadows ? nil : [NOTAShadowMetrics class]];
+                             showShadows = !showShadows;
+                           }];
                          });
         }];
   }

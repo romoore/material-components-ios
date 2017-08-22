@@ -16,7 +16,7 @@
 
 #import <UIKit/UIKit.h>
 
-@protocol MDCShadowMetrics <NSObject>
+@protocol MDCShadowMetricsProtocol <NSObject>
 @property(nonatomic, readonly) CGFloat topShadowRadius;
 @property(nonatomic, readonly) CGSize topShadowOffset;
 @property(nonatomic, readonly) float topShadowOpacity;
@@ -30,7 +30,7 @@
  @param elevation The shadow's elevation in points.
  @return The shadow metrics.
  */
-+ (nonnull id<MDCShadowMetrics>)metricsWithElevation:(CGFloat)elevation;
++ (nonnull id<MDCShadowMetricsProtocol>)metricsWithElevation:(CGFloat)elevation;
 @end
 
 /**
@@ -39,7 +39,7 @@
  These can be used if you require your own shadow implementation but want to match the material
  spec.
  */
-@interface MDCDefaultShadowMetrics : NSObject <MDCShadowMetrics>
+@interface MDCShadowMetrics : NSObject <MDCShadowMetricsProtocol>
 @end
 
 /**
@@ -58,7 +58,7 @@
  */
 @interface MDCShadowLayer : CALayer
 
-@property (class, nonatomic, strong) _Nonnull Class<MDCShadowMetrics> shadowMetricClass;
+@property (class, nonatomic, strong) _Nonnull Class<MDCShadowMetricsProtocol> shadowMetricClass;
 
 /**
  The elevation of the layer in points.
