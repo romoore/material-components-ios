@@ -27,12 +27,8 @@ class ButtonsDynamicTypeViewController: UIViewController {
     super.viewDidLoad()
 
     view.backgroundColor = UIColor(white: 0.9, alpha:1.0)
-    let titleColor = UIColor.white
-    let backgroundColor = UIColor(white: 0.1, alpha: 1.0)
 
     let flatButtonStatic = MDCRaisedButton()
-    flatButtonStatic.setTitleColor(titleColor, for: .normal)
-    flatButtonStatic.setBackgroundColor(backgroundColor, for: .normal)
     flatButtonStatic.setTitle("Static", for: UIControlState())
     flatButtonStatic.sizeToFit()
     flatButtonStatic.translatesAutoresizingMaskIntoConstraints = false
@@ -40,8 +36,6 @@ class ButtonsDynamicTypeViewController: UIViewController {
     view.addSubview(flatButtonStatic)
 
     let flatButtonDynamic = MDCRaisedButton()
-    flatButtonDynamic.setTitleColor(titleColor, for: .normal)
-    flatButtonDynamic.setBackgroundColor(backgroundColor, for: .normal)
     flatButtonDynamic.setTitle("Dynamic", for: UIControlState())
     flatButtonDynamic.sizeToFit()
     flatButtonDynamic.translatesAutoresizingMaskIntoConstraints = false
