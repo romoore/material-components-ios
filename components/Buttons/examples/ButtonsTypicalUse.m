@@ -27,9 +27,6 @@
 
 - (MDCButton *)buildCustomStrokedButton {
   MDCButton *button = [[MDCButton alloc] init];
-  [button setBackgroundColor:[UIColor clearColor] forState:UIControlStateNormal];
-  [button setTitleColor:[UIColor colorWithWhite:0.1f alpha:1] forState:UIControlStateNormal];
-  button.inkColor = [UIColor colorWithWhite:0 alpha:0.06f];
   button.layer.borderWidth = 1;
   button.layer.borderColor = [UIColor blackColor].CGColor;
   button.disabledAlpha = 0.38f;
@@ -39,13 +36,11 @@
 - (void)viewDidLoad {
   [super viewDidLoad];
 
-  self.view.backgroundColor = [UIColor colorWithWhite:0.9f alpha:1];
-  UIColor *titleColor = [UIColor whiteColor];
+  self.view.backgroundColor = [UIColor colorWithWhite:(CGFloat)0.9 alpha:1];
 
   // Raised button
 
   MDCRaisedButton *raisedButton = [[MDCRaisedButton alloc] init];
-  [raisedButton setTitleColor:titleColor forState:UIControlStateNormal];
   [raisedButton setTitle:@"Button" forState:UIControlStateNormal];
   [raisedButton sizeToFit];
   [raisedButton addTarget:self
@@ -56,7 +51,6 @@
   // Disabled raised button
 
   MDCRaisedButton *disabledRaisedButton = [[MDCRaisedButton alloc] init];
-  [disabledRaisedButton setTitleColor:titleColor forState:UIControlStateNormal];
   [disabledRaisedButton setTitle:@"Button" forState:UIControlStateNormal];
   [disabledRaisedButton sizeToFit];
   [disabledRaisedButton addTarget:self
@@ -69,7 +63,6 @@
 
   MDCFlatButton *flatButton = [[MDCFlatButton alloc] init];
   [flatButton setTitle:@"Button" forState:UIControlStateNormal];
-  [flatButton setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
   [flatButton sizeToFit];
   [flatButton addTarget:self
                  action:@selector(didTap:)
@@ -80,7 +73,6 @@
 
   MDCFlatButton *disabledFlatButton = [[MDCFlatButton alloc] init];
   [disabledFlatButton setTitle:@"Button" forState:UIControlStateNormal];
-  [disabledFlatButton setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
   [disabledFlatButton sizeToFit];
   [disabledFlatButton addTarget:self
                          action:@selector(didTap:)
@@ -112,7 +104,6 @@
   // Floating action button
 
   self.floatingButton = [[MDCFloatingButton alloc] init];
-  [self.floatingButton setTitleColor:titleColor forState:UIControlStateNormal];
   [self.floatingButton sizeToFit];
   [self.floatingButton addTarget:self
                           action:@selector(didTap:)

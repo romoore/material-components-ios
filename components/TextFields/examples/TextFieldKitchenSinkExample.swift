@@ -103,7 +103,6 @@ final class TextFieldKitchenSinkSwiftExample: UIViewController {
 
     textFieldDefault.delegate = self
     textFieldDefault.clearButtonMode = .whileEditing
-    textFieldDefault.backgroundColor = .white
 
     let textFieldControllerDefault = MDCTextInputControllerLegacyDefault(textInput: textFieldDefault)
 
@@ -149,7 +148,6 @@ final class TextFieldKitchenSinkSwiftExample: UIViewController {
 
     textFieldFullWidth.delegate = self
     textFieldFullWidth.clearButtonMode = .whileEditing
-    textFieldFullWidth.backgroundColor = .white
 
     let textFieldControllerFullWidth =
       MDCTextInputControllerLegacyFullWidth(textInput: textFieldFullWidth)
