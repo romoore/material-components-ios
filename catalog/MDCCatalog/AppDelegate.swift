@@ -41,12 +41,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // problems.
     navigationController.interactivePopGestureRecognizer?.delegate = navigationController
 
+    applyTheme()
+
     self.window?.rootViewController = navigationController
     self.window?.makeKeyAndVisible()
 
-    colorScheme = MDCBasicColorScheme(primaryColor: UIColor.init(white: 0.2, alpha: 1),
-                                      primaryLightColor: .init(white: 0.7, alpha: 1),
-                                      primaryDarkColor: .init(white: 0, alpha: 1))
+    return true
+  }
+
+  func applyTheme() {
+    colorScheme = MDCBasicColorScheme(primaryColor: MDCPalette.lightBlue.tint500,
+                                      primaryLightColor: MDCPalette.lightBlue.tint700,
+                                      primaryDarkColor: MDCPalette.lightBlue.tint300,
+                                      secondaryColor: MDCPalette.lime.accent200!,
+                                      secondaryLightColor: MDCPalette.lime.accent400!,
+                                      secondaryDarkColor: MDCPalette.lime.accent100!)
 
     // Apply color scheme to material design components using component themers.
     MDCActivityIndicatorColorThemer.apply(colorScheme, to: MDCActivityIndicator.appearance())
@@ -66,10 +75,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // Apply color scheme to UIKit components.
     UISlider.appearance().tintColor = colorScheme?.primaryColor
     UISwitch.appearance().tintColor = colorScheme?.primaryColor
-
-    return true
   }
+
 }
+
 
 extension UINavigationController: UIGestureRecognizerDelegate {
   public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {

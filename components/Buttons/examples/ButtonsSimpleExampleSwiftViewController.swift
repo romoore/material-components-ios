@@ -28,12 +28,9 @@ class ButtonsSimpleExampleSwiftViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    view.backgroundColor = UIColor(white: 0.9, alpha: 1.0)
-    //let titleColor = UIColor.white
-    let backgroundColor = UIColor(white: 0.1, alpha: 1.0)
+    view.backgroundColor = UIColor(white:0.9, alpha:1)
 
     let raisedButton = MDCRaisedButton()
-    raisedButton.setBackgroundColor(backgroundColor, for: .normal)
     raisedButton.setElevation(4, for: UIControlState())
     raisedButton.setTitle("Tap Me Too", for: UIControlState())
     raisedButton.sizeToFit()
@@ -42,7 +39,6 @@ class ButtonsSimpleExampleSwiftViewController: UIViewController {
     view.addSubview(raisedButton)
 
     let flatButton = MDCFlatButton()
-    flatButton.setTitleColor(.gray, for: .normal)
     flatButton.setTitle("Touch me", for: UIControlState())
     flatButton.sizeToFit()
     flatButton.translatesAutoresizingMaskIntoConstraints = false
@@ -50,13 +46,11 @@ class ButtonsSimpleExampleSwiftViewController: UIViewController {
     view.addSubview(flatButton)
 
     let floatingButton = MDCFloatingButton()
-    floatingButton.backgroundColor = backgroundColor
     floatingButton.sizeToFit()
     floatingButton.translatesAutoresizingMaskIntoConstraints = false
     floatingButton.addTarget(self, action: #selector(tap), for: .touchUpInside)
 
-    let plusShapeLayer = ButtonsTypicalUseSupplemental.createPlusShapeLayer(floatingButton)
-    floatingButton.layer.addSublayer(plusShapeLayer)
+    floatingButton.setImage(UIImage.init(named: "Plus"), for: .normal)
 
     view.addSubview(floatingButton)
 
