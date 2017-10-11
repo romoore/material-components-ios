@@ -34,4 +34,6 @@
 /** Refreshes the layout and style of the border view. Called within updateLayout. */
 - (BOOL)isPlaceholderUp;
 
+- (void)textInputDidChange:(NSNotification *)note;
+- (void)textInputDidEndEditing:(__unused NSNotification *)note;
 @end

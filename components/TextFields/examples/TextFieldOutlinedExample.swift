@@ -150,7 +150,7 @@ final class TextFieldOutlinedSwiftExample: UIViewController {
     allTextFieldControllers.append(phoneController)
 
     scrollView.addSubview(message)
-    let messageController = MDCTextInputControllerOutlinedTextArea(textInput: message)
+    let messageController = MDCTextInputControllerOutlinedTextAreaChips(textInput: message)
     message.textView?.delegate = self
     #if swift(>=3.2)
       message.text = """
