@@ -8,7 +8,6 @@
 #import "MDCTextInputControllerOutlinedTextAreaChips.h"
 
 #import "MaterialTypography.h"
-#import "private/MDCTextInputControllerDefault+Subclassing.h"
 
 @interface MDCTextInputControllerOutlinedTextAreaChipsCollectionViewCell : UICollectionViewCell
 
