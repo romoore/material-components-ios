@@ -20,15 +20,6 @@
 
 #import "MaterialTextFields.h"
 
-static NSString *const MDCChipFieldTextFieldKey = @"textField";
-static NSString *const MDCChipFieldDelegateKey = @"delegate";
-static NSString *const MDCChipFieldChipsKey = @"chips";
-static NSString *const MDCChipFieldDelimiterKey = @"delimiter";
-static NSString *const MDCChipFieldMinTextFieldWidthKey = @"minTextFieldWidth";
-static NSString *const MDCChipFieldContentEdgeInsetsKey = @"contentEdgeInsets";
-static NSString *const MDCChipFieldShowPlaceholderWithChipsKey = @"showPlaceholderWithChips";
-static NSString *const MDCChipFieldChipHeightKey = @"chipHeight";
-
 NSString * const MDCEmptyTextString = @"";
 NSString * const MDCChipDelimiterSpace = @" ";
 
@@ -44,26 +35,28 @@ const UIEdgeInsets MDCChipFieldDefaultContentEdgeInsets = {
     MDCChipFieldVerticalInset, MDCChipFieldHorizontalInset, MDCChipFieldVerticalInset,
     MDCChipFieldHorizontalInset};
 
-@protocol MDCChipTextFieldDelegate <NSObject>
+@class MDCChipTextView;
 
-- (void)textFieldShouldRespondToDeleteBackward:(UITextField *)textField;
+@protocol MDCChipTextViewDelegate <NSObject>
 
-@end
-
-@interface MDCChipTextField : MDCTextField
-
-@property(nonatomic, weak) id<MDCChipTextFieldDelegate> deletionDelegate;
+- (void)textViewShouldRespondToDeleteBackward:(MDCChipTextView *)textView;
 
 @end
 
-@implementation MDCChipTextField
+@interface MDCChipTextView : MDCIntrinsicHeightTextView
+
+@property(nonatomic, weak) id<MDCChipTextViewDelegate> deletionDelegate;
+
+@end
+
+@implementation MDCChipTextView
 
 #pragma mark UIKeyInput
 
 - (void)deleteBackward {
   [super deleteBackward];
   if (self.text.length == 0) {
-    [self.deletionDelegate textFieldShouldRespondToDeleteBackward:self];
+    [self.deletionDelegate textViewShouldRespondToDeleteBackward:self];
   }
 }
 
@@ -94,20 +87,11 @@ const UIEdgeInsets MDCChipFieldDefaultContentEdgeInsets = {
 
 #endif
 
-#pragma mark - UIAccessibility
-
-- (CGRect)accessibilityFrame {
-  CGRect frame = [super accessibilityFrame];
-  return CGRectMake(frame.origin.x + self.textInsets.left,
-                    frame.origin.y,
-                    frame.size.width - self.textInsets.left,
-                    frame.size.height);
-}
 
 @end
 
 @interface MDCChipField ()
-    <MDCChipTextFieldDelegate, MDCTextInputPositioningDelegate, UITextFieldDelegate>
+    <MDCChipTextViewDelegate, MDCTextInputPositioningDelegate, UITextViewDelegate>
 @end
 
 @implementation MDCChipField {
@@ -121,60 +105,30 @@ const UIEdgeInsets MDCChipFieldDefaultContentEdgeInsets = {
 
     _chips = [NSMutableArray array];
 
-    MDCChipTextField *chipTextField = [[MDCChipTextField alloc] initWithFrame:self.bounds];
-    chipTextField.underline.hidden = YES;
+    MDCChipTextView *chipTextField = [[MDCChipTextView alloc] initWithFrame:self.bounds];
+//    chipTextField.underline.hidden = YES;
     chipTextField.delegate = self;
     chipTextField.deletionDelegate = self;
-    chipTextField.positioningDelegate = self;
+//    chipTextField.positioningDelegate = self;
     chipTextField.accessibilityTraits = UIAccessibilityTraitNone;
     chipTextField.autocorrectionType = UITextAutocorrectionTypeNo;
     chipTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     chipTextField.keyboardType = MDCChipFieldDefaultKeyboardType;
     // Listen for notifications posted when the text field is the first responder.
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(textFieldDidChange)
-                                                 name:UITextFieldTextDidChangeNotification
+                                             selector:@selector(textViewDidChange)
+                                                 name:UITextViewTextDidChangeNotification
                                                object:chipTextField];
     // Also listen for notifications posted when the text field is not the first responder.
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(textFieldDidChange)
+                                             selector:@selector(textViewDidChange)
                                                  name:MDCTextFieldTextDidSetTextNotification
                                                object:chipTextField];
-    [self addSubview:chipTextField];
-    _textField = chipTextField;
-  }
-  return self;
-}
 
-- (instancetype)initWithCoder:(NSCoder *)aDecoder {
-  self = [super initWithCoder:aDecoder];
-  if (self) {
-    [self commonMDCChipFieldInit];
-
-    _textField = [aDecoder decodeObjectForKey:MDCChipFieldTextFieldKey];
-
-    if ([aDecoder containsValueForKey:MDCChipFieldDelegateKey]) {
-      _delegate = [aDecoder decodeObjectForKey:MDCChipFieldDelegateKey];
-    }
-    if ([aDecoder containsValueForKey:MDCChipFieldChipsKey]) {
-      _chips = [aDecoder decodeObjectForKey:MDCChipFieldChipsKey];
-    }
-    if ([aDecoder containsValueForKey:MDCChipFieldDelimiterKey]) {
-      _delimiter = (NSUInteger)[aDecoder decodeIntegerForKey:MDCChipFieldDelimiterKey];
-    }
-    if ([aDecoder containsValueForKey:MDCChipFieldMinTextFieldWidthKey]) {
-      _minTextFieldWidth = (CGFloat)[aDecoder decodeDoubleForKey:MDCChipFieldMinTextFieldWidthKey];
-    }
-    if ([aDecoder containsValueForKey:MDCChipFieldContentEdgeInsetsKey]) {
-      _contentEdgeInsets = [aDecoder decodeUIEdgeInsetsForKey:MDCChipFieldContentEdgeInsetsKey];
-    }
-    if ([aDecoder containsValueForKey:MDCChipFieldShowPlaceholderWithChipsKey]) {
-      _showPlaceholderWithChips =
-          [aDecoder decodeBoolForKey:MDCChipFieldShowPlaceholderWithChipsKey];
-    }
-    if ([aDecoder containsValueForKey:MDCChipFieldChipHeightKey]) {
-      _chipHeight = (CGFloat)[aDecoder decodeDoubleForKey:MDCChipFieldChipHeightKey];
-    }
+    MDCMultilineTextField *chipField = [[MDCMultilineTextField alloc] init];
+    chipField.textView = chipTextField;
+    [self addSubview:chipField];
+    _textField = chipField;
   }
   return self;
 }
@@ -192,19 +146,6 @@ const UIEdgeInsets MDCChipFieldDefaultContentEdgeInsets = {
   _chipHeight = 32.0f;
 }
 
-- (void)encodeWithCoder:(NSCoder *)aCoder {
-  [super encodeWithCoder:aCoder];
-
-  [aCoder encodeObject:_textField forKey:MDCChipFieldTextFieldKey];
-  [aCoder encodeObject:_delegate forKey:MDCChipFieldDelegateKey];
-  [aCoder encodeObject:_chips forKey:MDCChipFieldChipHeightKey];
-  [aCoder encodeInteger:(NSInteger)_delimiter forKey:MDCChipFieldDelimiterKey];
-  [aCoder encodeDouble:(double)_minTextFieldWidth forKey:MDCChipFieldMinTextFieldWidthKey];
-  [aCoder encodeUIEdgeInsets:_contentEdgeInsets forKey:MDCChipFieldContentEdgeInsetsKey];
-  [aCoder encodeBool:_showPlaceholderWithChips forKey:MDCChipFieldShowPlaceholderWithChipsKey];
-  [aCoder encodeDouble:(double)_chipHeight forKey:MDCChipFieldChipHeightKey];
-}
-
 - (void)layoutSubviews {
   [super layoutSubviews];
 
@@ -214,20 +155,20 @@ const UIEdgeInsets MDCChipFieldDefaultContentEdgeInsets = {
       self.mdf_effectiveUserInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionRightToLeft;
 
   // Calculate the frames for all the chips and set them.
-  NSArray *chipFrames = [self chipFramesForSize:standardizedBounds.size];
-  for (NSUInteger index = 0; index < _chips.count; index++) {
-    MDCChipView *chip = _chips[index];
-
-    CGRect chipFrame = [chipFrames[index] CGRectValue];
-    if (isRTL) {
-      chipFrame = MDFRectFlippedHorizontally(chipFrame, CGRectGetWidth(self.bounds));
-    }
-    chip.frame = chipFrame;
-  }
+//  NSArray *chipFrames = [self chipFramesForSize:standardizedBounds.size];
+//  for (NSUInteger index = 0; index < _chips.count; index++) {
+//    MDCChipView *chip = _chips[index];
+//
+//    CGRect chipFrame = [chipFrames[index] CGRectValue];
+//    if (isRTL) {
+//      chipFrame = MDFRectFlippedHorizontally(chipFrame, CGRectGetWidth(self.bounds));
+//    }
+//    chip.frame = chipFrame;
+//  }
 
   // Get the last chip frame and calculate the text field frame from that.
-  CGRect lastChipFrame = [chipFrames.lastObject CGRectValue];
-  CGRect textFieldFrame = [self frameForTextFieldForLastChipFrame:lastChipFrame
+//  CGRect lastChipFrame = [chipFrames.lastObject CGRectValue];
+  CGRect textFieldFrame = [self frameForTextFieldForLastChipFrame:CGRectZero
                                                     chipFieldSize:standardizedBounds.size];
   if (isRTL) {
     textFieldFrame = MDFRectFlippedHorizontally(textFieldFrame, CGRectGetWidth(self.bounds));
@@ -267,12 +208,21 @@ const UIEdgeInsets MDCChipFieldDefaultContentEdgeInsets = {
   CGFloat height = CGRectGetMaxY(textFieldFrame) + self.contentEdgeInsets.bottom +
       (self.chipHeight - textFieldFrame.size.height) / 2;
   CGFloat width = MAX(size.width, self.minTextFieldWidth);
+//  CGSize textFieldSize = [self.textField sizeThatFits:size];
 
   return CGSizeMake(width, height);
 }
 
 - (void)clearTextInput {
-  self.textField.text = MDCEmptyTextString;
+  NSMutableAttributedString *currentText = [self.textField.attributedText copy];
+  [currentText enumerateAttribute:NSAttachmentAttributeName
+                          inRange:NSMakeRange(0, currentText.length)
+                          options:NSAttributedStringEnumerationReverse
+                       usingBlock:^(id  _Nullable value, NSRange range, BOOL * _Nonnull stop) {
+                         if (value == nil) {
+                           NSLog(@"[%lu, %lu] %@", (unsigned long)range.location, (unsigned long)range.length, value);
+                         }
+  }];
   [self updateTextFieldPlaceholderText];
 }
 
@@ -393,7 +343,19 @@ const UIEdgeInsets MDCChipFieldDefaultContentEdgeInsets = {
 }
 
 - (void)createNewChipFromInput {
-  NSString *strippedTitle = [self.textField.text
+  NSMutableAttributedString *attributedTitle = [self.textField.attributedText mutableCopy];
+  __block NSRange rangeAfterChips = NSMakeRange(NSNotFound, 0);
+  [attributedTitle enumerateAttribute:NSAttachmentAttributeName inRange:NSMakeRange(0, attributedTitle.length) options:0 usingBlock:^(id  _Nullable value, NSRange range, BOOL * _Nonnull stop) {
+    if (value == nil) {
+      *stop = YES;
+    }
+    rangeAfterChips = range;
+  }];
+  if (rangeAfterChips.location == NSNotFound) {
+    [self clearTextInput];
+    return;
+  }
+  NSString *strippedTitle = [[[attributedTitle attributedSubstringFromRange:rangeAfterChips] string]
       stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
   if (strippedTitle.length > 0) {
     MDCChipView *chip = [[MDCChipView alloc] init];
@@ -437,7 +399,7 @@ const UIEdgeInsets MDCChipFieldDefaultContentEdgeInsets = {
 
 #pragma mark - MDCChipTextFieldDelegate
 
-- (void)textFieldShouldRespondToDeleteBackward:(UITextField *)textField {
+- (void)textViewShouldRespondToDeleteBackward:(__unused MDCChipTextView *)textView {
   if ([self isAnyChipSelected]) {
     [self removeSelectedChips];
     [self deselectAllChips];
@@ -446,10 +408,10 @@ const UIEdgeInsets MDCChipFieldDefaultContentEdgeInsets = {
   }
 }
 
-#pragma mark - UITextFieldDelegate
+#pragma mark - UITextViewDelegate
 
-- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
-  if (textField == self.textField) {
+- (BOOL)textViewShouldBeginEditing:(UITextView *)textView {
+  if (textView == self.textField.textView) {
     [self deselectAllChips];
   }
   if ([self.delegate respondsToSelector:@selector(chipFieldDidBeginEditing:)]) {
@@ -458,9 +420,9 @@ const UIEdgeInsets MDCChipFieldDefaultContentEdgeInsets = {
   return YES;
 }
 
-- (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
+- (BOOL)textViewShouldEndEditing:(UITextView *)textView {
   if ((self.delimiter & MDCChipFieldDelimiterDidEndEditing) == MDCChipFieldDelimiterDidEndEditing) {
-    if (textField == self.textField) {
+    if (textView == self.textField.textView) {
       [self commitInput];
     }
   }
@@ -470,30 +432,22 @@ const UIEdgeInsets MDCChipFieldDefaultContentEdgeInsets = {
   return YES;
 }
 
-- (BOOL)textFieldShouldReturn:(UITextField *)textField {
-  BOOL shouldReturn = YES;
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
 
-  // Chip field content view will handle |chipFieldShouldReturn| if the client is not using chip
-  // field directly. If the client uses chip field directly without the content view and has not
-  // implemented |chipFieldShouldReturn|, then a chip should always be created.
-  if ([self.delegate respondsToSelector:@selector(chipFieldShouldReturn:)]) {
-    shouldReturn = [self.delegate chipFieldShouldReturn:self];
-  }
-  if (shouldReturn) {
-    [self createNewChipWithTextField:textField delimiter:MDCChipFieldDelimiterReturn];
-  }
+    [self createNewChipWithTextField:textView delimiter:MDCChipFieldDelimiterReturn];
 
-  return shouldReturn;
+  return YES;
 }
 
-- (void)textFieldDidChange {
+- (void)textViewDidChange {
   [self deselectAllChips];
-  [self createNewChipWithTextField:self.textField delimiter:MDCChipFieldDelimiterSpace];
+  [self createNewChipWithTextField:self.textField.textView delimiter:MDCChipFieldDelimiterSpace];
 
   if ([self.delegate respondsToSelector:@selector(chipField:didChangeInput:)]) {
     [self.delegate chipField:self
               didChangeInput:[self.textField.text copy]];
   }
+  return;
 }
 
 #pragma mark - Private
@@ -505,16 +459,61 @@ const UIEdgeInsets MDCChipFieldDefaultContentEdgeInsets = {
     forControlEvents:UIControlEventTouchUpInside];
 }
 
-- (void)addChipSubview:(MDCChipView *)chip {
-  if (chip.superview != self) {
-    [chip addTarget:self
-             action:@selector(chipTapped:)
-   forControlEvents:UIControlEventTouchUpInside];
-    [self addSubview:chip];
-  }
+- (UIImage *)imageForChipView:(MDCChipView *)chip {
+  [chip sizeToFit];
+  CGSize imageSize = CGSizeMake(CGRectGetWidth(chip.bounds), CGRectGetHeight(chip.bounds));
+  UIGraphicsBeginImageContextWithOptions(imageSize, YES, self.window.screen.scale);
+  [UIColor.redColor setFill];
+  CGContextRef context = UIGraphicsGetCurrentContext();
+  CGContextFillRect(context, CGRectMake(0, 0, imageSize.width, imageSize.height));
+
+  UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+  
+  UIGraphicsEndImageContext();
+  return image;
 }
 
-- (void)createNewChipWithTextField:(UITextField *)textField
+- (NSRange)rangeForNewChip {
+  NSAttributedString *currentText = [self.textField.attributedText copy];
+  if (currentText.length == 0) {
+    return NSMakeRange(NSNotFound, 0);
+  }
+  __block NSRange newChipRange = NSMakeRange(NSNotFound, 0);
+  [currentText enumerateAttribute:NSAttachmentAttributeName inRange:NSMakeRange(0, currentText.length) options:NSAttributedStringEnumerationReverse usingBlock:^(id  _Nullable value, NSRange range, BOOL * _Nonnull stop) {
+    if (value == nil) {
+      *stop = YES;
+    }
+    newChipRange = range;
+  }];
+  return newChipRange;
+}
+
+- (void)addChipSubview:(MDCChipView *)chip {
+  UIImage *placeholderImage = [self imageForChipView:chip];
+  NSRange rangeForChip = [self rangeForNewChip];
+  NSLog(@"Found range: %@", NSStringFromRange(rangeForChip));
+  NSTextAttachment *imageAttachment = [[NSTextAttachment alloc] init];
+  imageAttachment.image = placeholderImage;
+  NSAttributedString *imageString = [NSAttributedString attributedStringWithAttachment:imageAttachment];
+  NSMutableAttributedString *text = [self.textField.attributedText mutableCopy];
+  [text replaceCharactersInRange:rangeForChip withAttributedString:imageString];
+  self.textField.attributedText = text;
+  NSRange chipNewRange = NSMakeRange(rangeForChip.location, 1);
+  CGRect chipFrame = [self.textField.textView.layoutManager boundingRectForGlyphRange:chipNewRange
+                                                                      inTextContainer:self.textField.textView.textContainer];
+  chip.frame = chipFrame;
+  [self addSubview:chip];
+
+//  if (chip.superview != self) {
+//    [chip addTarget:self
+//             action:@selector(chipTapped:)
+//   forControlEvents:UIControlEventTouchUpInside];
+//    [self addSubview:chip];
+//  }
+
+}
+
+- (void)createNewChipWithTextField:(UITextView *)textField
                          delimiter:(MDCChipFieldDelimiter)delimiter {
   if ((self.delimiter & delimiter) == delimiter && textField.text.length > 0) {
     if (delimiter == MDCChipFieldDelimiterReturn) {
@@ -538,7 +537,15 @@ const UIEdgeInsets MDCChipFieldDefaultContentEdgeInsets = {
 }
 
 - (BOOL)isTextFieldEmpty {
-  return self.textField.text.length == 0;
+  NSMutableAttributedString *attributedTitle = [self.textField.attributedText mutableCopy];
+  __block NSRange rangeAfterChips = NSMakeRange(NSNotFound, 0);
+  [attributedTitle enumerateAttribute:NSAttachmentAttributeName inRange:NSMakeRange(0, attributedTitle.length) options:0 usingBlock:^(id  _Nullable value, NSRange range, BOOL * _Nonnull stop) {
+    if (value == nil) {
+      *stop = YES;
+    }
+    rangeAfterChips = range;
+  }];
+  return rangeAfterChips.location == NSNotFound;
 }
 
 #pragma mark - Sizing

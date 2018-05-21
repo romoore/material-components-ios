@@ -30,3 +30,4 @@
 #import "MDCTextInputControllerOutlinedTextArea.h"
 #import "MDCTextInputControllerUnderline.h"
 #import "MDCTextInputUnderlineView.h"
+#import "MDCTextInputControllerOutlinedChip.h"

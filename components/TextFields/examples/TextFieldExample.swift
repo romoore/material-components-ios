@@ -111,7 +111,15 @@ final class TextFieldSwiftExample: UIViewController {
     scrollView.addSubview(name)
     let nameController = MDCTextInputControllerUnderline(textInput: name)
     name.delegate = self
-    name.text = "Grace Hopper"
+    if #available(iOSApplicationExtension 8.2, *) {
+      name.attributedText = NSAttributedString(string: "Red", attributes: [NSForegroundColorAttributeName: UIColor.red, NSFontAttributeName: UIFont.systemFont(ofSize: 16, weight: UIFontWeightBold)])
+      let attachment = NSTextAttachment()
+      attachment.image = UIImage(named: "ic_search")
+      name.attributedText = NSAttributedString(attachment: attachment)
+
+    } else {
+      // Fallback on earlier versions
+    }
     nameController.placeholderText = "Name"
     nameController.helperText = "First and Last"
     allTextFieldControllers.append(nameController)

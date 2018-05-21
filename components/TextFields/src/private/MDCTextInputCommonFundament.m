@@ -105,7 +105,7 @@ static inline UIColor *MDCTextInputUnderlineColor() {
 
 // We never use the text property. Instead always read from the text field.
 
-@synthesize attributedText = _do_no_use_attributedText;
+//@synthesize attributedText = _do_no_use_attributedText;
 @synthesize borderPath = _borderPath;
 @synthesize borderView = _borderView;
 @synthesize clearButton = _clearButton;
@@ -1015,8 +1015,8 @@ static inline UIColor *MDCTextInputUnderlineColor() {
 }
 
 - (void)didSetText {
-  [self didChange];
-  [self.textInput setNeedsLayout];
+//  [self didChange];
+//  [self.textInput setNeedsLayout];
 }
 
 #pragma mark - KVO
@@ -1068,6 +1068,15 @@ static inline UIColor *MDCTextInputUnderlineColor() {
 
 - (void)contentSizeCategoryDidChange:(__unused NSNotification *)notification {
   [self updateFontsForDynamicType];
+}
+
+- (void)setAttributedText:(NSAttributedString *)attributedText {
+  self.textInput.attributedText = attributedText;
+}
+
+- (NSAttributedString *)attributedText {
+  return self.textInput.attributedText;
+  
 }
 
 @end

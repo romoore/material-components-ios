@@ -70,7 +70,7 @@ typedef NS_OPTIONS(NSUInteger, MDCChipFieldDelimiter) {
  If you set a custom font, make sure to also set the custom font on textField.placeholderLabel and
  on your MDCChipView instances.
  */
-@property(nonatomic, nonnull, readonly) MDCTextField *textField;
+@property(nonatomic, nonnull, readonly) MDCMultilineTextField *textField;
 
 /**
  The fixed height of all chip views.

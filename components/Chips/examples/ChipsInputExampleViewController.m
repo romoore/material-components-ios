@@ -21,6 +21,7 @@
 #import "MaterialChips+ChipThemer.h"
 
 @interface ChipsInputExampleViewController () <MDCChipFieldDelegate>
+@property(nonatomic, strong) MDCTextInputControllerOutlinedTextArea *controller;
 @end
 
 @implementation ChipsInputExampleViewController {
@@ -36,6 +37,7 @@
   _chipField.delegate = self;
   _chipField.textField.placeholderLabel.text = @"This is a chip field.";
   _chipField.backgroundColor = [UIColor whiteColor];
+  _controller = [[MDCTextInputControllerOutlinedTextArea alloc] initWithTextInput:_chipField.textField];
   [self.view addSubview:_chipField];
 }
 
