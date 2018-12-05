@@ -12,14 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#import "MaterialButtons.h"
+#import "MaterialContainerScheme.h"
+
 #import <Foundation/Foundation.h>
 
-#import "../../../src/private/MDCFlexibleHeaderTopSafeArea.h"
+@interface MDCFloatingButton (MaterialTheming)
 
-@interface FlexibleHeaderTopSafeAreaTestsFakeTopSafeAreaDelegate
-    : NSObject <MDCFlexibleHeaderSafeAreaDelegate>
-@property(nonatomic) BOOL isStatusBarShifted;
-@property(nonatomic) BOOL topSafeAreaInsetDidChangeWasCalled;
-@property(nonatomic) CGFloat deviceTopSafeAreaInset;
-@property(nonatomic, weak) id<MDCFlexibleHeaderSafeAreaDelegate> forwardingDelegate;
+/**
+ Applies the secondary Floating Action Button style to an MDCFloatingButton instance.
+ @param scheme A container scheme instance containing any desired customizations to the theming
+ system.
+
+ Learn more at the [Material
+ Guidelines](https://material.io/design/components/buttons-floating-action-button.html#theming)
+ */
+- (void)applySecondaryThemeWithScheme:(nonnull id<MDCContainerScheming>)scheme;
+
 @end
