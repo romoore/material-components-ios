@@ -28,7 +28,7 @@
             buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "35D26A7363E6FB07B90E850D9E3F37D5"
+               BlueprintIdentifier = "F56C18D8F10BA69D348E3AD45B3DA353"
                BuildableName = "MaterialComponentsSnapshotTests-Unit-Tests.xctest"
                BlueprintName = "MaterialComponentsSnapshotTests-Unit-Tests"
                ReferencedContainer = "container:Pods/Pods.xcodeproj">
@@ -46,7 +46,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "7D83333945994E6457973778931CC2E1"
+               BlueprintIdentifier = "C18CA295A45D4143CFF8F6628A723B01"
                BuildableName = "MaterialComponents-Unit-Tests.xctest"
                BlueprintName = "MaterialComponents-Unit-Tests"
                ReferencedContainer = "container:Pods/Pods.xcodeproj">
@@ -56,17 +56,19 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3171F7594A536C448D38F6611EB2A7B7"
-               BuildableName = "MaterialComponentsAlpha-Unit-Tests.xctest"
-               BlueprintName = "MaterialComponentsAlpha-Unit-Tests"
+               BlueprintIdentifier = "8F88287BD86476EC237E2DFD2A15D7F0"
+               BuildableName = "MaterialComponentsBeta-Unit-Tests.xctest"
+               BlueprintName = "MaterialComponentsBeta-Unit-Tests"
                ReferencedContainer = "container:Pods/Pods.xcodeproj">
             </BuildableReference>
          </TestableReference>
          <TestableReference
-            skipped = "NO">
+            skipped = "NO"
+            parallelizable = "YES"
+            testExecutionOrdering = "random">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "35D26A7363E6FB07B90E850D9E3F37D5"
+               BlueprintIdentifier = "F56C18D8F10BA69D348E3AD45B3DA353"
                BuildableName = "MaterialComponentsSnapshotTests-Unit-Tests.xctest"
                BlueprintName = "MaterialComponentsSnapshotTests-Unit-Tests"
                ReferencedContainer = "container:Pods/Pods.xcodeproj">

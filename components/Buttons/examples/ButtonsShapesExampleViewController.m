@@ -17,9 +17,11 @@
 #import "MaterialButtons+Theming.h"
 #import "MaterialButtons+TypographyThemer.h"
 #import "MaterialButtons.h"
+#import "MaterialContainerScheme.h"
 #import "MaterialShapeLibrary.h"
 #import "MaterialShapes.h"
 #import "MaterialTypography.h"
+
 #import "supplemental/ButtonsTypicalUseSupplemental.h"
 
 @interface ButtonsShapesExampleViewController ()
@@ -180,7 +182,7 @@
       setCorners:[[MDCCutCornerTreatment alloc]
                      initWithCut:CGRectGetWidth(self.floatingButton.bounds) / 2]];
   self.floatingButton.shapeGenerator = floatingShapeGenerator;
-  [MDCFloatingActionButtonThemer applyScheme:buttonScheme toButton:self.floatingButton];
+  [self.floatingButton applySecondaryThemeWithScheme:self.containerScheme];
 
   [self.floatingButton addTarget:self
                           action:@selector(didTap:)

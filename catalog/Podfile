@@ -53,12 +53,14 @@ target "MDCCatalog" do
     'Themes/tests/unit',
     'Typography/tests/unit',
   ]
-  pod 'MaterialComponentsAlpha', :path => '../', :testspecs => [
+  pod 'MaterialComponentsBeta', :path => '../', :testspecs => [
     'ActionSheet/tests/unit',
     'schemes/Container/tests/unit',
   ]
   pod 'MaterialComponentsSnapshotTests', :path => '../', :testspecs => [
     'Cards/tests/snapshot',
+    'Chips/tests/snapshot',
+    'TextFields/tests/snapshot',
   ]
   pod 'CatalogByConvention', "~> 2.5"
   pod 'MaterialCatalog', :path => 'MaterialCatalog/'
@@ -71,7 +73,7 @@ target "MDCActionExtension" do
   project 'MDCCatalog.xcodeproj'
   pod 'MaterialComponentsExamples', :path => '../'
   pod 'MaterialComponents', :path => '../'
-  pod 'MaterialComponentsAlpha', :path => '../'
+  pod 'MaterialComponentsBeta', :path => '../'
   pod 'CatalogByConvention', "~> 2.5"
   pod 'MaterialCatalog', :path => 'MaterialCatalog/'
 
@@ -83,7 +85,7 @@ target "MDCDragons" do
   project 'MDCDragons.xcodeproj'
   pod 'CatalogByConvention', "~> 2.5"
   pod 'MaterialComponents', :path => '../'
-  pod 'MaterialComponentsAlpha', :path => '../'
+  pod 'MaterialComponentsBeta', :path => '../'
   pod 'MaterialComponentsExamples', :path => '../'
   pod 'MaterialComponentsSnapshotTests', :path => '../'
   use_frameworks!
@@ -96,8 +98,8 @@ post_install do |installer|
   mdc_xcconfigs = [
     "#{pod_dir}/Target Support Files/MaterialComponents/MaterialComponents.xcconfig",
     "#{pod_dir}/Target Support Files/MaterialComponents/MaterialComponents.unit.xcconfig",
-    "#{pod_dir}/Target Support Files/MaterialComponentsAlpha/MaterialComponentsAlpha.xcconfig",
-    "#{pod_dir}/Target Support Files/MaterialComponentsAlpha/MaterialComponentsAlpha.unit.xcconfig",
+    "#{pod_dir}/Target Support Files/MaterialComponentsBeta/MaterialComponentsBeta.xcconfig",
+    "#{pod_dir}/Target Support Files/MaterialComponentsBeta/MaterialComponentsBeta.unit.xcconfig",
     "#{pod_dir}/Target Support Files/MaterialComponentsExamples/MaterialComponentsExamples.xcconfig",
     "#{pod_dir}/Target Support Files/Pods-MDCCatalog/Pods-MDCCatalog.debug.xcconfig",
     "#{pod_dir}/Target Support Files/Pods-MDCCatalog/Pods-MDCCatalog.release.xcconfig",

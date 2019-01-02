@@ -58,9 +58,11 @@
 @property(nonatomic, readonly) CGFloat contentHeightSurplus;
 @property(nonatomic, readonly) BOOL contentScrollsToReveal;
 @property(nonatomic) MDCBottomDrawerState drawerState;
+@property(nonatomic) CGFloat initialDrawerFactor;
 @property(nullable, nonatomic, readonly) UIPresentationController *presentationController;
 - (void)cacheLayoutCalculations;
 - (void)updateDrawerState:(CGFloat)transitionPercentage;
+- (CGFloat)calculateInitialDrawerFactor;
 @end
 
 @interface MDCBottomDrawerPresentationController (ScrollViewTests) <
@@ -538,6 +540,57 @@
 
   // Then
   XCTAssertEqualWithAccuracy(self.fakeBottomDrawer.scrollView.contentOffset.y, 500, (CGFloat)0.001);
+}
+
+- (void)testCalculateInitialDrawerFactorWithSmallHeight {
+  // Given
+  CGRect fakeRect = CGRectMake(0, 0, 250, 500);
+  self.fakeBottomDrawer.originalPresentingViewController.view.bounds = fakeRect;
+  self.fakeBottomDrawer.contentViewController.preferredContentSize = CGSizeMake(250, 100);
+
+  // When
+  CGFloat drawerFactor = [self.fakeBottomDrawer calculateInitialDrawerFactor];
+
+  // Then
+  XCTAssertEqualWithAccuracy(drawerFactor, 0.2, 0.001);
+}
+
+- (void)testCalculateInitialDrawerFactorWithLargeHeight {
+  // Given
+  CGRect fakeRect = CGRectMake(0, 0, 250, 500);
+  self.fakeBottomDrawer.originalPresentingViewController.view.bounds = fakeRect;
+  self.fakeBottomDrawer.contentViewController.preferredContentSize = CGSizeMake(250, 1000);
+
+  // When
+  CGFloat drawerFactor = [self.fakeBottomDrawer calculateInitialDrawerFactor];
+
+  // Then
+  XCTAssertEqualWithAccuracy(drawerFactor, 0.5, 0.001);
+}
+
+- (void)testExpandToFullScreen {
+  // Given
+  MDCNavigationDrawerFakeHeaderViewController *fakeHeader =
+      [[MDCNavigationDrawerFakeHeaderViewController alloc] init];
+  self.fakeBottomDrawer.headerViewController = fakeHeader;
+  XCTestExpectation *expectation = [self expectationWithDescription:@"expand complete"];
+
+  // When
+  [self.drawerViewController expandToFullscreenWithDuration:(CGFloat)0.2
+                                                 completion:^(BOOL completed) {
+                                                   [expectation fulfill];
+                                                 }];
+  [self waitForExpectationsWithTimeout:1 handler:nil];
+
+  // Then
+  XCTAssertEqualWithAccuracy(self.fakeBottomDrawer.trackingScrollView.frame.origin.y, 0, 0.001);
+  CGFloat expectedHeight = self.fakeBottomDrawer.presentingViewBounds.size.height -
+                           fakeHeader.preferredContentSize.height;
+  XCTAssertEqualWithAccuracy(
+      CGRectGetHeight(self.fakeBottomDrawer.contentViewController.view.frame), expectedHeight,
+      0.001);
+  XCTAssertEqualWithAccuracy(CGRectGetMinY(self.fakeBottomDrawer.scrollView.frame), 0, 0.001);
+  XCTAssertEqualWithAccuracy(self.fakeBottomDrawer.contentHeaderTopInset, 20, 0.01);
 }
 
 @end
