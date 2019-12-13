@@ -16,11 +16,63 @@
 
 #import "MDCChipView.h"
 
+/** A short Chip title in Latin characters. */
+static NSString *kShortChipTitleLatin = @"Chip";
+
+/** Creates an all-white image of the specified size. */
+static UIImage *CreateImageOfSize(CGSize size) {
+  CGSize imageSize = size;
+  UIGraphicsBeginImageContext(imageSize);
+  [UIColor.whiteColor setFill];
+  UIRectFill(CGRectMake(0, 0, imageSize.width, imageSize.height));
+  UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+  UIGraphicsEndImageContext();
+  return image;
+}
+
 @interface MDCChipViewTests : XCTestCase
 
 @end
 
 @implementation MDCChipViewTests
+
+- (UIImage *)testImage24Points {
+  static UIImage *image;
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    CreateImageOfSize(CGSizeMake(24, 24));
+  });
+  return image;
+}
+
+- (UIImage *)testImage18Points {
+  static UIImage *image;
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    CreateImageOfSize(CGSizeMake(18, 18));
+  });
+  return image;
+}
+
+- (void)assertChip:(MDCChipView *)testChip hasIdenticalLayoutToChip:(MDCChipView *)referenceChip {
+  XCTAssertTrue(CGRectEqualToRect(testChip.bounds, referenceChip.bounds),
+                @"(%@) is not equal to (%@)", NSStringFromCGRect(testChip.bounds),
+                NSStringFromCGRect(referenceChip.bounds));
+  XCTAssertTrue(CGRectEqualToRect(testChip.imageView.frame, referenceChip.imageView.frame),
+                @"(%@) is not equal to (%@)", NSStringFromCGRect(testChip.imageView.frame),
+                NSStringFromCGRect(referenceChip.imageView.frame));
+  XCTAssertTrue(CGRectEqualToRect(testChip.selectedImageView.frame, referenceChip.imageView.frame),
+                @"(%@) is not equal to (%@)", NSStringFromCGRect(testChip.selectedImageView.frame),
+                NSStringFromCGRect(referenceChip.selectedImageView.frame));
+  XCTAssertTrue(CGRectEqualToRect(testChip.titleLabel.frame, referenceChip.titleLabel.frame),
+                @"(%@) is not equal to (%@)", NSStringFromCGRect(testChip.titleLabel.frame),
+                NSStringFromCGRect(referenceChip.titleLabel.frame));
+  XCTAssertTrue(CGRectEqualToRect(testChip.accessoryView.frame, referenceChip.accessoryView.frame),
+                @"(%@) is not equal to (%@)", NSStringFromCGRect(testChip.accessoryView.frame),
+                NSStringFromCGRect(referenceChip.accessoryView.frame));
+}
+
+#pragma mark - contentPadding
 
 - (void)testPositiveAccessoryPaddingTopIncreasesChipHeight {
   // Given
@@ -89,6 +141,45 @@
   // Then
   XCTAssertEqualWithAccuracy(fitSize.width, expectedSize.width, 0.001);
 }
+
+#pragma mark - imagePadding
+
+- (void)testImageEqualSizeToSelectedImagePositionsFramesCorrectlyWithImageInsetsZero {
+  // Given
+  MDCChipView *referenceChip = [[MDCChipView alloc] init];
+  MDCChipView *testChip = [[MDCChipView alloc] init];
+  referenceChip.titleLabel.text = kShortChipTitleLatin;
+  testChip.titleLabel.text = kShortChipTitleLatin;
+
+  // When
+  referenceChip.imageView.image = [self testImage24Points];
+  testChip.imageView.image = [self testImage24Points];
+  testChip.selectedImageView.image = [self testImage24Points];
+  [referenceChip sizeToFit];
+  [testChip sizeToFit];
+
+  // Then
+  [self assertChip:testChip hasIdenticalLayoutToChip:referenceChip];
+}
+
+- (void)testImageLargerThanSelectedImagePositionsFramesCorrectlyWithImageInsetsZero {
+  // Given
+  MDCChipView *referenceChip = [[MDCChipView alloc] init];
+  MDCChipView *testChip = [[MDCChipView alloc] init];
+  referenceChip.titleLabel.text = kShortChipTitleLatin;
+  testChip.titleLabel.text = kShortChipTitleLatin;
+
+  // When
+  referenceChip.imageView.image = [self testImage24Points];
+  testChip.imageView.image = [self testImage24Points];
+  testChip.selectedImageView.image = [self testImage24Points];
+  [referenceChip sizeToFit];
+  [testChip sizeToFit];
+
+  // Then
+  [self assertChip:testChip hasIdenticalLayoutToChip:referenceChip];
+}
+
 
 #pragma mark - MaterialElevation
 
