@@ -336,4 +336,15 @@
   XCTAssertTrue(cell.showsDivider);
 }
 
+- (void)testDefaultImageEdgeInsets {
+  // Given
+  MDCActionSheetItemTableViewCell *cell = [[MDCActionSheetItemTableViewCell alloc] init];
+
+  // Then
+  UIEdgeInsets expectedImageEdgeInsets = UIEdgeInsetsMake(-16, 0, 0, -32);
+  XCTAssertTrue(UIEdgeInsetsEqualToEdgeInsets(cell.imageEdgeInsets, expectedImageEdgeInsets),
+                @"(%@) is not equal to (%@)", NSStringFromUIEdgeInsets(cell.imageEdgeInsets),
+                NSStringFromUIEdgeInsets(expectedImageEdgeInsets));
+}
+
 @end
